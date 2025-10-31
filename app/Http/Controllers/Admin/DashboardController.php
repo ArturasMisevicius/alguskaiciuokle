@@ -58,6 +58,7 @@ class DashboardController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => $validated['password'],
+            'initial_password' => $validated['password'],
         ]);
 
         $user->assignRole($validated['role']);
@@ -82,12 +83,21 @@ class DashboardController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'role' => 'required|in:admin,user',
+            'new_password' => 'nullable|string|min:8',
         ]);
 
-        $user->update([
+        $updateData = [
             'name' => $validated['name'],
             'email' => $validated['email'],
-        ]);
+        ];
+
+        // Update password if provided
+        if (!empty($validated['new_password'])) {
+            $updateData['password'] = $validated['new_password'];
+            $updateData['initial_password'] = $validated['new_password'];
+        }
+
+        $user->update($updateData);
 
         // Update role
         $user->roles()->detach();
