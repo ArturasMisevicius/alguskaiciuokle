@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php:*)",
+      "Bash(composer require:*)",
+      "Bash(cmd /c composer require:*)",
+      "Bash(cmd /c \"composer require laravel/boost\")",
+      "Bash(powershell -Command:*)",
+      "Bash(cmd /c \"npm run build\")",
+      "Bash(cmd /c php artisan:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
