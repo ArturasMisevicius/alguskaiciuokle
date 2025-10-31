@@ -7,7 +7,18 @@
       "Bash(cmd /c \"composer require laravel/boost\")",
       "Bash(powershell -Command:*)",
       "Bash(cmd /c \"npm run build\")",
-      "Bash(cmd /c php artisan:*)"
+      "Bash(cmd /c php artisan:*)",
+      "Bash(git commit:*)",
+      "Bash(git config:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(cmd /c \"php artisan migrate:fresh --seed\")",
+      "Bash(cmd /c \"php artisan db:seed --class=UserSeeder\")",
+      "Bash(cmd /c \"php artisan make:migration add_initial_password_to_users_table\")",
+      "Bash(cmd /c \"composer require filament/filament:^3.2 -W\")",
+      "Bash(npm install:*)",
+      "Bash(git add:*)",
+      "Bash(cmd /c \"dir /B /AD app\")"
     ],
     "deny": [],
     "ask": []
