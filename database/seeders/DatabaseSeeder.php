@@ -17,10 +17,13 @@ class DatabaseSeeder extends Seeder
     {
         // Seed in order of dependencies
         $this->call([
+            CompanySeeder::class,
             RoleSeeder::class,
             UserSeeder::class,
             ProjectSeeder::class,
             RateCardSeeder::class,
+            TariffSeeder::class,
+            TimesheetSeeder::class,
         ]);
     }
 }

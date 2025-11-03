@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added - 2025-11-03
+- Admin Tariff management (CRUD) and pricing fallback by time bands
+
 ### Added - 2025-10-31
 
 #### User Management Features

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Project extends Model
 {
@@ -16,6 +17,7 @@ class Project extends Model
      * @var array<string>
      */
     protected $fillable = [
+        'company_id',
         'name',
         'description',
         'code',
@@ -48,6 +50,14 @@ class Project extends Model
     public function rateCards(): HasMany
     {
         return $this->hasMany(RateCard::class);
+    }
+
+    /**
+     * Company this project belongs to.
+     */
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class);
     }
 
     /**

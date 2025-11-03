@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\RateCard;
 use App\Models\Timesheet;
 use App\Models\TimesheetPricingDetail;
+use App\Models\Tariff;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -45,35 +46,57 @@ class PricingEngineService
                 $segment['hours']
             );
 
-            if (!$rateCard) {
-                // No rate card found, skip this segment or use default
-                continue;
+            if ($rateCard) {
+                // Calculate via rate card
+                $segmentAmount = $this->calculateSegmentAmount($rateCard, $segment['hours']);
+
+                TimesheetPricingDetail::create([
+                    'timesheet_id' => $timesheet->id,
+                    'rate_card_id' => $rateCard->id,
+                    'segment_date' => $segment['date'],
+                    'segment_start' => $segment['start'],
+                    'segment_end' => $segment['end'],
+                    'segment_hours' => $segment['hours'],
+                    'rate_type' => $rateCard->rate_type,
+                    'applied_rate' => $rateCard->rate_type === 'fixed'
+                        ? $rateCard->rate_amount
+                        : $rateCard->rate_multiplier,
+                    'segment_amount' => $segmentAmount,
+                    'currency' => $rateCard->currency,
+                    'is_overtime' => $rateCard->is_overtime,
+                    'overtime_type' => $rateCard->overtime_type,
+                    'calculation_metadata' => [
+                        'rate_card_name' => $rateCard->name,
+                        'precedence' => $rateCard->precedence,
+                    ],
+                ]);
+            } else {
+                // Fallback to simple tariff by time band
+                $tariff = $this->findTariffByTime($segment['start']);
+                if (!$tariff) {
+                    continue;
+                }
+
+                $segmentAmount = round($segment['hours'] * (float) $tariff->price_per_hour, 2);
+
+                TimesheetPricingDetail::create([
+                    'timesheet_id' => $timesheet->id,
+                    'rate_card_id' => null,
+                    'segment_date' => $segment['date'],
+                    'segment_start' => $segment['start'],
+                    'segment_end' => $segment['end'],
+                    'segment_hours' => $segment['hours'],
+                    'rate_type' => 'fixed',
+                    'applied_rate' => $tariff->price_per_hour,
+                    'segment_amount' => $segmentAmount,
+                    'currency' => $timesheet->currency ?? 'EUR',
+                    'is_overtime' => false,
+                    'overtime_type' => null,
+                    'calculation_metadata' => [
+                        'tariff_name' => $tariff->name,
+                    ],
+                ]);
             }
-
-            // Calculate segment amount
-            $segmentAmount = $this->calculateSegmentAmount($rateCard, $segment['hours']);
-
-            // Create pricing detail record
-            TimesheetPricingDetail::create([
-                'timesheet_id' => $timesheet->id,
-                'rate_card_id' => $rateCard->id,
-                'segment_date' => $segment['date'],
-                'segment_start' => $segment['start'],
-                'segment_end' => $segment['end'],
-                'segment_hours' => $segment['hours'],
-                'rate_type' => $rateCard->rate_type,
-                'applied_rate' => $rateCard->rate_type === 'fixed'
-                    ? $rateCard->rate_amount
-                    : $rateCard->rate_multiplier,
-                'segment_amount' => $segmentAmount,
-                'currency' => $rateCard->currency,
-                'is_overtime' => $rateCard->is_overtime,
-                'overtime_type' => $rateCard->overtime_type,
-                'calculation_metadata' => [
-                    'rate_card_name' => $rateCard->name,
-                    'precedence' => $rateCard->precedence,
-                ],
-            ]);
 
             $totalHours += $segment['hours'];
             $totalAmount += $segmentAmount;
@@ -192,6 +215,16 @@ class PricingEngineService
 
         // Sort by precedence (highest first) and return the best match
         return $rateCards->sortByDesc('precedence')->first();
+    }
+
+    /**
+     * Find an active tariff matching the given time.
+     */
+    protected function findTariffByTime(string $time): ?Tariff
+    {
+        return Tariff::active()->get()->first(function (Tariff $t) use ($time) {
+            return $t->appliesToTime($time);
+        });
     }
 
     /**

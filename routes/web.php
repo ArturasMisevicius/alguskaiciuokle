@@ -26,6 +26,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/users/create', [AdminDashboardController::class, 'createUser'])->name('users.create');
     Route::post('/users', [AdminDashboardController::class, 'storeUser'])->name('users.store');
     Route::get('/users/{user}/edit', [AdminDashboardController::class, 'editUser'])->name('users.edit');
+    Route::get('/users/{user}/calendar', [AdminDashboardController::class, 'userCalendar'])->name('users.calendar');
+    Route::post('/users/{user}/calendar', [AdminDashboardController::class, 'saveUserCalendar'])->name('users.calendar.save');
     Route::patch('/users/{user}', [AdminDashboardController::class, 'updateUser'])->name('users.update');
     Route::delete('/users/{user}', [AdminDashboardController::class, 'destroyUser'])->name('users.destroy');
 
@@ -42,6 +44,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Rate Card Management
     Route::resource('rate-cards', \App\Http\Controllers\Admin\RateCardController::class);
     Route::post('/rate-cards/{rateCard}/duplicate', [\App\Http\Controllers\Admin\RateCardController::class, 'duplicate'])->name('rate-cards.duplicate');
+
+    // Tariff Management
+    Route::resource('tariffs', \App\Http\Controllers\Admin\TariffController::class);
+
+    // Company Management
+    Route::resource('companies', \App\Http\Controllers\Admin\CompanyController::class);
 });
 
 // User Routes

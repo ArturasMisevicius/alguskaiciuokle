@@ -16,6 +16,9 @@
                         <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                             <i class="fas fa-tachometer-alt mr-2"></i>{{ __('Dashboard') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.tariffs.index')" :active="request()->routeIs('admin.tariffs.*')">
+                            <i class="fas fa-tags mr-2"></i>{{ __('Tariff') }}
+                        </x-nav-link>
                         <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users*')">
                             <i class="fas fa-users-cog mr-2"></i>{{ __('Users') }}
                         </x-nav-link>
@@ -24,6 +27,9 @@
                         </x-nav-link>
                         <x-nav-link :href="route('admin.projects.index')" :active="request()->routeIs('admin.projects.*')">
                             <i class="fas fa-folder mr-2"></i>{{ __('Projects') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.companies.index')" :active="request()->routeIs('admin.companies.*')">
+                            <i class="fas fa-building mr-2"></i>{{ __('Companies') }}
                         </x-nav-link>
                         <x-nav-link :href="route('admin.rate-cards.index')" :active="request()->routeIs('admin.rate-cards.*')">
                             <i class="fas fa-dollar-sign mr-2"></i>{{ __('Rate Cards') }}
@@ -109,6 +115,9 @@
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users*')">
                     {{ __('Users') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.companies.index')" :active="request()->routeIs('admin.companies.*')">
+                    {{ __('Companies') }}
                 </x-responsive-nav-link>
             @else
                 <x-responsive-nav-link :href="route('user.dashboard')" :active="request()->routeIs('user.dashboard')">

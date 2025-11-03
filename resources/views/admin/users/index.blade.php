@@ -67,14 +67,16 @@
                                     <tr class="hover:bg-gray-50 transition-colors">
                                         <td class="table-cell">
                                             <div class="flex items-center">
-                                                <div class="flex-shrink-0 h-10 w-10">
-                                                    <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                                                        <i class="fas fa-user text-indigo-600"></i>
+                                                <a href="{{ route('admin.users.calendar', $user) }}" class="flex items-center group">
+                                                    <div class="flex-shrink-0 h-10 w-10">
+                                                        <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center group-hover:bg-indigo-200 transition">
+                                                            <i class="fas fa-user text-indigo-600"></i>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="ml-4">
-                                                    <div class="font-medium text-gray-900">{{ $user->name }}</div>
-                                                </div>
+                                                    <div class="ml-4">
+                                                        <div class="font-medium text-gray-900 group-hover:text-indigo-700 transition">{{ $user->name }}</div>
+                                                    </div>
+                                                </a>
                                             </div>
                                         </td>
                                         <td class="table-cell">

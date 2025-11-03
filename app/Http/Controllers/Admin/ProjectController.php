@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -14,7 +15,7 @@ class ProjectController extends Controller
      */
     public function index(): View
     {
-        $projects = Project::withCount('timesheets')
+        $projects = Project::with(['company'])->withCount('timesheets')
             ->orderBy('is_active', 'desc')
             ->orderBy('name')
             ->paginate(15);
@@ -27,7 +28,8 @@ class ProjectController extends Controller
      */
     public function create(): View
     {
-        return view('admin.projects.create');
+        $companies = Company::orderBy('name')->get(['id', 'name']);
+        return view('admin.projects.create', compact('companies'));
     }
 
     /**
@@ -36,6 +38,7 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'company_id' => 'required|exists:companies,id',
             'name' => 'required|string|max:255',
             'code' => 'nullable|string|max:50|unique:projects,code',
             'description' => 'nullable|string|max:1000',
@@ -53,7 +56,8 @@ class ProjectController extends Controller
      */
     public function edit(Project $project): View
     {
-        return view('admin.projects.edit', compact('project'));
+        $companies = Company::orderBy('name')->get(['id', 'name']);
+        return view('admin.projects.edit', compact('project', 'companies'));
     }
 
     /**
@@ -62,6 +66,7 @@ class ProjectController extends Controller
     public function update(Request $request, Project $project)
     {
         $validated = $request->validate([
+            'company_id' => 'required|exists:companies,id',
             'name' => 'required|string|max:255',
             'code' => 'nullable|string|max:50|unique:projects,code,' . $project->id,
             'description' => 'nullable|string|max:1000',

@@ -119,4 +119,96 @@ class DashboardController extends Controller
 
         return redirect()->route('admin.users')->with('success', 'User deleted successfully.');
     }
+
+    /**
+     * Display the calendar for a specific user.
+     */
+    public function userCalendar(Request $request, User $user): View
+    {
+        $month = (int) ($request->query('month', now()->month));
+        $year = (int) ($request->query('year', now()->year));
+
+        $current = now()->setYear($year)->setMonth($month)->startOfMonth();
+        $startOfCalendar = $current->copy()->startOfWeek();
+        $endOfCalendar = $current->copy()->endOfMonth()->endOfWeek();
+
+        $timesheets = $user->timesheets()
+            ->dateRange($current->copy()->startOfMonth(), $current->copy()->endOfMonth())
+            ->get()
+            ->keyBy(fn ($t) => $t->date->toDateString());
+
+        return view('admin.users.calendar', [
+            'user' => $user,
+            'month' => $month,
+            'year' => $year,
+            'current' => $current,
+            'startOfCalendar' => $startOfCalendar,
+            'endOfCalendar' => $endOfCalendar,
+            'timesheets' => $timesheets,
+        ]);
+    }
+
+    /**
+     * Save calendar hours for the selected month.
+     */
+    public function saveUserCalendar(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'month' => 'required|integer|min:1|max:12',
+            'year' => 'required|integer|min:2000|max:2100',
+            'hours' => 'array',
+            'hours.*' => 'nullable|numeric|min:0|max:24',
+            'quick.date' => 'nullable|date',
+            'quick.hours' => 'nullable|numeric|min:0|max:24',
+        ]);
+
+        $month = (int) $validated['month'];
+        $year = (int) $validated['year'];
+
+        // Bulk month inputs
+        $hoursByDate = $validated['hours'] ?? [];
+        foreach ($hoursByDate as $date => $hours) {
+            if ($hours === null || $hours === '' || (float)$hours <= 0) {
+                // Remove draft entry if exists for that date
+                $user->timesheets()->whereDate('date', $date)->draft()->delete();
+                continue;
+            }
+
+            $startTime = '09:00:00';
+            $endTime = now()->setTime(9, 0, 0)->addMinutes((int) round(((float) $hours) * 60))->format('H:i:s');
+
+            $timesheet = $user->timesheets()->firstOrNew(['date' => $date]);
+            $timesheet->fill([
+                'project_id' => $timesheet->project_id ?? null,
+                'start_time' => $startTime,
+                'end_time' => $endTime,
+                'break_duration' => 0,
+                'note' => $timesheet->note ?? null,
+                'status' => 'draft',
+                'currency' => $timesheet->currency ?? 'EUR',
+            ])->save();
+        }
+
+        // Quick add single entry
+        if (!empty($validated['quick']['date']) && isset($validated['quick']['hours']) && (float) $validated['quick']['hours'] > 0) {
+            $qDate = $validated['quick']['date'];
+            $qHours = (float) $validated['quick']['hours'];
+            $startTime = '09:00:00';
+            $endTime = now()->setTime(9, 0, 0)->addMinutes((int) round($qHours * 60))->format('H:i:s');
+
+            $timesheet = $user->timesheets()->firstOrNew(['date' => $qDate]);
+            $timesheet->fill([
+                'project_id' => $timesheet->project_id ?? null,
+                'start_time' => $startTime,
+                'end_time' => $endTime,
+                'break_duration' => 0,
+                'note' => $timesheet->note ?? null,
+                'status' => 'draft',
+                'currency' => $timesheet->currency ?? 'EUR',
+            ])->save();
+        }
+
+        return redirect()->route('admin.users.calendar', ['user' => $user->id, 'month' => $month, 'year' => $year])
+            ->with('success', 'Calendar saved.');
+    }
 }

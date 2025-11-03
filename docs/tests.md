@@ -7,13 +7,14 @@ php artisan test
 ./vendor/bin/phpunit
 ```
 
-## Coverage (if Xdebug available)
+## Linting
+Format your code before commit:
 ```bash
-XDEBUG_MODE=coverage php artisan test --coverage --min=85
+./vendor/bin/pint
 ```
 
 ## Testing guidelines
-- Use Pest or PHPUnit for feature/unit tests
+- Use Laravel's built-in testing tools for unit and feature tests
 - Use database transactions or refresh database
 - Prefer factories and seeders
 - Keep tests deterministic and isolated

@@ -12,6 +12,8 @@
 # - All project documentation must live in /docs and be linked from /docs/index.md.
 # - When adding a new doc, update /docs/index.md links in alphabetical/logical order.
 # - Workflow: For any new feature or change, first add tasks to docs/todo.md and implement them one-by-one. After completing a task, create or update a corresponding Markdown doc in /docs and add a link in /docs/index.md.
+# - Testing policy: After finishing each task, ensure tests exist for all relevant levels (unit, feature, and browser/e2e if applicable). Create missing tests, run the full test suite non-interactively, and fix all failures before considering the task done.
+# - Error resolution workflow: When provided with an error, read logs, identify the root cause, implement the fix, create/update relevant docs in /docs (and link from /docs/index.md), and add a CHANGELOG entry under Unreleased → Fixed. Ensure tests cover the fix and pass.
 
 # Docs: index.md
 # - Must link to all available docs in /docs using relative links.
