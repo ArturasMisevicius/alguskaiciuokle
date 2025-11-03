@@ -11,6 +11,7 @@
 # - Prefer non-interactive commands in docs; ensure commands work on Windows, macOS, and Linux.
 # - All project documentation must live in /docs and be linked from /docs/index.md.
 # - When adding a new doc, update /docs/index.md links in alphabetical/logical order.
+# - Workflow: For any new feature or change, first add tasks to docs/todo.md and implement them one-by-one. After completing a task, create or update a corresponding Markdown doc in /docs and add a link in /docs/index.md.
 
 # Docs: index.md
 # - Must link to all available docs in /docs using relative links.
@@ -46,6 +47,7 @@
 # Docs: todo.md
 # - Use checkbox list format; each item should be action-oriented and clear.
 # - Keep items high-level (not overly granular); maintain current project priorities.
+# - Process: Add tasks here before coding; check off as completed. Upon completion, produce or update a relevant doc in /docs/*.md and ensure it's linked from /docs/index.md.
 
 # Docs: architecture.md
 # - Document MVC layout paths (Models, Controllers, Views) and domain services.
