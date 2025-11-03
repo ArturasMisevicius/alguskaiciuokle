@@ -15,10 +15,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Seed roles first
+        // Seed in order of dependencies
         $this->call([
             RoleSeeder::class,
             UserSeeder::class,
+            ProjectSeeder::class,
+            RateCardSeeder::class,
         ]);
     }
 }

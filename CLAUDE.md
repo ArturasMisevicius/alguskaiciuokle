@@ -154,6 +154,126 @@ Middleware aliases are registered in `bootstrap/app.php`:
 
 Use in routes: `->middleware('role:admin')`
 
+## Timesheet & Salary System
+
+This application includes a comprehensive timesheet tracking and automatic salary calculation system.
+
+### Overview
+
+The system provides:
+- **Manual time entry** with start/end times, breaks, and project assignment
+- **Live timer** for clock-in/clock-out functionality
+- **Weekly view** with submission workflow (draft → submitted → approved/rejected)
+- **Automatic pricing** using a flexible rate card matrix
+- **Admin approval workflow** for timesheets
+
+### Database Tables
+
+- `projects` - Projects that can be assigned to timesheets
+- `timesheets` - Individual time entries with status workflow
+- `rate_cards` - Pricing rules with precedence-based matching
+- `timesheet_pricing_details` - Calculated pricing breakdown per entry
+
+### Rate Card System ("Price Matrix")
+
+Rate cards define how timesheet entries are priced. The system automatically selects the best matching rate card based on specificity (precedence).
+
+**Scoping Options:**
+- User-specific (applies to one user)
+- Role-specific (applies to all users with a role)
+- Project-specific (applies to specific project)
+- Day-of-week mask (e.g., Mon-Fri only)
+- Time bands (e.g., 08:00-18:00 for regular hours)
+- Date ranges (effective from/until dates)
+
+**Rate Types:**
+- `fixed` - Fixed hourly rate (e.g., €15/hour)
+- `multiplier` - Multiplier vs base rate (e.g., 1.5x for overtime)
+
+**Precedence Rules:**
+The system automatically calculates precedence scores:
+- User-specific: +100 points
+- Role-specific: +50 points
+- Project-specific: +30 points
+- Day-specific: +10 points
+- Time-band specific: +10 points
+- Date-range specific: +5 points
+
+Higher precedence always wins. Most specific rule applies.
+
+**Overtime Support:**
+- Daily overtime (e.g., >8 hours/day)
+- Weekly overtime (e.g., >40 hours/week)
+- Separate rate cards for overtime with higher rates
+
+### Pricing Engine
+
+Location: `app/Services/PricingEngineService.php`
+
+The pricing engine automatically:
+1. Splits time entries across days (handles midnight crossings)
+2. Splits entries into segments by time bands
+3. Finds best-matching rate card for each segment
+4. Calculates pricing and stores detailed breakdown
+5. Updates timesheet with total hours and amount
+
+**To recalculate pricing:**
+```php
+$pricingEngine = app(PricingEngineService::class);
+$pricingEngine->calculatePricing($timesheet);
+```
+
+### User Workflow
+
+1. **Create timesheet entry:**
+   - Manual entry: specify date, start, end, break
+   - Or use live timer: clock in/out
+2. **Entry saved as draft** (can edit/delete)
+3. **Submit for approval** (single entry or entire week)
+4. **Admin reviews and approves/rejects**
+5. **Approved entries** show calculated hours and earnings
+
+### Admin Tasks
+
+**Projects Management:**
+- CRUD operations for projects
+- Activate/deactivate projects
+- Route: `admin.projects.index`
+
+**Rate Cards Management:**
+- Create complex pricing rules
+- Set precedence manually or auto-calculate
+- Duplicate existing rate cards for quick setup
+- Route: `admin.rate-cards.index`
+
+**Timesheet Approval:**
+- View all timesheets with filtering
+- Approve/reject individual entries
+- Bulk approve multiple entries
+- View detailed pricing breakdown
+- Route: `admin.timesheets.index`
+
+### Sample Data
+
+The seeder creates:
+- 4 sample projects (Internal Dev, Client A, Client B, Maintenance)
+- 4 rate cards:
+  - Standard: Mon-Fri, 08:00-18:00, €15/hour
+  - Evening: Mon-Fri, 18:00-22:00, €20/hour
+  - Weekend: Sat-Sun, all day, €25/hour
+  - Daily Overtime: >8 hours, €22.50/hour
+
+### Common Commands
+
+```bash
+# Seed projects and rate cards
+cmd /c "php artisan db:seed --class=ProjectSeeder"
+cmd /c "php artisan db:seed --class=RateCardSeeder"
+
+# Refresh and reseed everything
+cmd /c "php artisan migrate:fresh --seed"
+```
+
 ## Testing with Pest
 
 The project uses Pest PHP for testing. Test files are in `tests/` directory.

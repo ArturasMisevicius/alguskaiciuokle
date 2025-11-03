@@ -1,0 +1,86 @@
+# Cursor Rules
+
+# Repository-wide guidance for this Laravel + Blade + Filament project
+
+# General
+# - Framework: Laravel (PHP >= 8.2), View layer: Blade only (no API layer).
+# - UI: Filament for admin/UI scaffolding; Tailwind for styling via Vite.
+# - Keep controllers thin; move business logic to services in app/Services.
+# - Never commit secrets; use .env and .env.example for placeholders only.
+# - Prefer explicitness and clarity over cleverness; follow Laravel conventions.
+# - Prefer non-interactive commands in docs; ensure commands work on Windows, macOS, and Linux.
+# - All project documentation must live in /docs and be linked from /docs/index.md.
+# - When adding a new doc, update /docs/index.md links in alphabetical/logical order.
+
+# Docs: index.md
+# - Must link to all available docs in /docs using relative links.
+# - Keep links concise; use human-readable titles.
+# - Reflect Blade-only architecture (no API link).
+
+# Docs: requirements.md
+# - List minimum versions for PHP, Composer, Node, DBs, and PHP extensions.
+# - Separate required vs recommended tools; keep versions current.
+# - Mention optional Docker and mail testing tools.
+
+# Docs: setup.md
+# - Provide a step-by-step setup from clone to serve.
+# - Use non-interactive Composer/NPM commands where possible.
+# - Include Filament installation steps and Vite build instructions.
+# - Reference Blade docs; avoid any API tooling.
+
+# Docs: environment.md
+# - Enumerate critical .env keys grouped by concern (app, db, cache/queue, mail, redis).
+# - Include environment profiles (local vs production) and debug guidance.
+# - Explicitly warn against committing real secrets.
+
+# Docs: database.md
+# - Show migration and rollback commands; include seeding instructions.
+# - Note seeders should be idempotent and safe in development.
+# - Encourage use of factories for test data generation.
+
+# Docs: tests.md
+# - Prefer `php artisan test`; optionally show direct phpunit command.
+# - Include optional coverage command with Xdebug and a reasonable minimum threshold.
+# - State guidelines: isolation, factories, transactions/refresh database.
+
+# Docs: todo.md
+# - Use checkbox list format; each item should be action-oriented and clear.
+# - Keep items high-level (not overly granular); maintain current project priorities.
+
+# Docs: architecture.md
+# - Document MVC layout paths (Models, Controllers, Views) and domain services.
+# - Emphasize Blade views and absence of API layer; routes are in routes/web.php only.
+# - Encourage thin controllers, rich services; mention jobs, events, listeners structure.
+
+# Docs: laravel-cheatsheet.md
+# - Include common queue and schedule commands; useful optimizations and cache clears.
+# - Keep concise; avoid duplicating detailed docs found elsewhere.
+
+# Docs: deployment.md
+# - Include composer optimize, Laravel caches (config/route/view), and Vite build steps.
+# - Use `php artisan migrate --force` and include cron and supervisor notes.
+# - Remind about .env correctness and file permissions for storage/ and bootstrap/cache/.
+
+# Docs: security.md
+# - State secret handling rules, least-privilege principles, input validation.
+# - Provide a private vulnerability reporting process.
+
+# Docs: contributing.md
+# - Describe branch strategy (feature branches from main) and PR etiquette.
+# - Define commit message style and testing expectations before submit.
+
+# Docs: changelog.md
+# - Follow Keep a Changelog style with Unreleased and versioned sections.
+# - Summarize Added/Changed/Fixed; avoid noisy entries.
+
+# Docs: blade.md
+# - Define views structure (layouts, components, partials) and naming.
+# - Encourage using layouts, stacks, components; avoid inline scripts/styles.
+# - Default to escaped output; only use `@{!! !!}@` when safe and necessary.
+
+# Docs: ui-filament.md
+# - Include installation steps and resource/panel generation commands.
+# - Note auth integration and access control configuration in config/filament.php.
+# - Mention Tailwind customization and Vite asset build requirements.
+
+

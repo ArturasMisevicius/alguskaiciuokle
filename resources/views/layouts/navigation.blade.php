@@ -19,9 +19,21 @@
                         <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users*')">
                             <i class="fas fa-users-cog mr-2"></i>{{ __('Users') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.timesheets.index')" :active="request()->routeIs('admin.timesheets.*')">
+                            <i class="fas fa-clock mr-2"></i>{{ __('Timesheets') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.projects.index')" :active="request()->routeIs('admin.projects.*')">
+                            <i class="fas fa-folder mr-2"></i>{{ __('Projects') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.rate-cards.index')" :active="request()->routeIs('admin.rate-cards.*')">
+                            <i class="fas fa-dollar-sign mr-2"></i>{{ __('Rate Cards') }}
+                        </x-nav-link>
                     @else
                         <x-nav-link :href="route('user.dashboard')" :active="request()->routeIs('user.dashboard')">
                             <i class="fas fa-home mr-2"></i>{{ __('Dashboard') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('user.timesheets.index')" :active="request()->routeIs('user.timesheets.*')">
+                            <i class="fas fa-clock mr-2"></i>{{ __('Timesheets') }}
                         </x-nav-link>
                         <x-nav-link :href="route('user.profile')" :active="request()->routeIs('user.profile')">
                             <i class="fas fa-user-circle mr-2"></i>{{ __('My Profile') }}
@@ -30,39 +42,50 @@
                 </div>
             </div>
 
-            <!-- Settings Dropdown -->
+            <!-- Settings Dropdown (Admin Only) or User Info Display -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div class="flex items-center">
-                                <i class="fas fa-user-circle mr-2"></i>
-                                {{ Auth::user()->name }}
-                            </div>
+                @if(auth()->user()->hasRole('admin'))
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                <div class="flex items-center">
+                                    <i class="fas fa-user-circle mr-2"></i>
+                                    {{ Auth::user()->name }}
+                                </div>
 
-                            <div class="ms-1">
-                                <i class="fas fa-chevron-down text-xs"></i>
-                            </div>
-                        </button>
-                    </x-slot>
+                                <div class="ms-1">
+                                    <i class="fas fa-chevron-down text-xs"></i>
+                                </div>
+                            </button>
+                        </x-slot>
 
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            <i class="fas fa-user-cog mr-2"></i>{{ __('Profile') }}
-                        </x-dropdown-link>
-
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                <i class="fas fa-sign-out-alt mr-2"></i>{{ __('Log Out') }}
+                        <x-slot name="content">
+                            <x-dropdown-link :href="route('profile.edit')">
+                                <i class="fas fa-user-cog mr-2"></i>{{ __('Profile') }}
                             </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
+
+                            <!-- Authentication -->
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+
+                                <x-dropdown-link :href="route('logout')"
+                                        onclick="event.preventDefault();
+                                                    this.closest('form').submit();">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>{{ __('Log Out') }}
+                                </x-dropdown-link>
+                            </form>
+                        </x-slot>
+                    </x-dropdown>
+                @else
+                    <!-- User Info Display (No Dropdown) -->
+                    <div class="flex flex-col items-end">
+                        <div class="text-sm font-medium text-gray-800 flex items-center">
+                            <i class="fas fa-user-circle mr-2 text-indigo-600"></i>
+                            {{ Auth::user()->name }}
+                        </div>
+                        <div class="text-xs text-gray-500">{{ Auth::user()->email }}</div>
+                    </div>
+                @endif
             </div>
 
             <!-- Hamburger -->
@@ -91,6 +114,9 @@
                 <x-responsive-nav-link :href="route('user.dashboard')" :active="request()->routeIs('user.dashboard')">
                     {{ __('Dashboard') }}
                 </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('user.timesheets.index')" :active="request()->routeIs('user.timesheets.*')">
+                    {{ __('Timesheets') }}
+                </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('user.profile')" :active="request()->routeIs('user.profile')">
                     {{ __('My Profile') }}
                 </x-responsive-nav-link>
@@ -104,22 +130,26 @@
                 <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
             </div>
 
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
-
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
+            @if(auth()->user()->hasRole('admin'))
+                <div class="mt-3 space-y-1">
+                    <x-responsive-nav-link :href="route('profile.edit')">
+                        {{ __('Profile') }}
                     </x-responsive-nav-link>
-                </form>
-            </div>
+
+                    <!-- Authentication -->
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+
+                        <x-responsive-nav-link :href="route('logout')"
+                                onclick="event.preventDefault();
+                                            this.closest('form').submit();">
+                            {{ __('Log Out') }}
+                        </x-responsive-nav-link>
+                    </form>
+                </div>
+            @else
+                <!-- Regular users don't have dropdown options in mobile menu -->
+            @endif
         </div>
     </div>
 </nav>

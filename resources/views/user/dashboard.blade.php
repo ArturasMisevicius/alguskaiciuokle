@@ -74,14 +74,60 @@
                             </div>
                         </div>
                         <div class="space-y-3">
+                            <a href="{{ route('user.timesheets.index') }}" class="flex items-center text-purple-600 hover:text-purple-800 transition">
+                                <i class="fas fa-clock w-6"></i>
+                                <span class="hover:underline">My Timesheets</span>
+                            </a>
                             <a href="{{ route('user.profile') }}" class="flex items-center text-purple-600 hover:text-purple-800 transition">
                                 <i class="fas fa-user-edit w-6"></i>
                                 <span class="hover:underline">Edit Profile</span>
                             </a>
-                            <a href="{{ route('profile.edit') }}" class="flex items-center text-purple-600 hover:text-purple-800 transition">
-                                <i class="fas fa-cog w-6"></i>
-                                <span class="hover:underline">Account Settings</span>
-                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Salary Information -->
+            <div class="mt-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-lg font-semibold text-white flex items-center">
+                            <i class="fas fa-money-bill-wave mr-2"></i>
+                            Salary & Timesheet Overview
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Period
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Hours Worked
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Rate
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Total Earned
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Status
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-8 text-center text-gray-500">
+                                            <i class="fas fa-clock text-4xl text-gray-300 mb-3"></i>
+                                            <p class="text-lg">No timesheet data available yet</p>
+                                            <p class="text-sm mt-2">Timesheet and salary tracking feature coming soon...</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

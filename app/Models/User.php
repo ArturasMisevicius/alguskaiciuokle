@@ -99,4 +99,20 @@ class User extends Authenticatable
             $this->roles()->detach($role->id);
         }
     }
+
+    /**
+     * Get the timesheets for the user.
+     */
+    public function timesheets(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Timesheet::class);
+    }
+
+    /**
+     * Get the rate cards for the user.
+     */
+    public function rateCards(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(RateCard::class);
+    }
 }

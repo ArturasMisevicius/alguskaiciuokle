@@ -18,7 +18,12 @@
       "Bash(cmd /c \"composer require filament/filament:^3.2 -W\")",
       "Bash(npm install:*)",
       "Bash(git add:*)",
-      "Bash(cmd /c \"dir /B /AD app\")"
+      "Bash(cmd /c \"dir /B /AD app\")",
+      "Bash(cmd /c \"php artisan make:migration create_projects_table\")",
+      "Bash(cmd /c \"mkdir resources\\views\\user\\timesheets\")",
+      "Bash(cmd /c \"mkdir resources\\views\\admin\\timesheets && mkdir resources\\views\\admin\\projects && mkdir resources\\views\\admin\\rate-cards\")",
+      "Bash(cmd /c \"php artisan migrate\")",
+      "Bash(cmd /c \"php artisan db:seed\")"
     ],
     "deny": [],
     "ask": []
