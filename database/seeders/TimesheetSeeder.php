@@ -31,5 +31,3 @@ class TimesheetSeeder extends Seeder
         }
     }
 }
-
-

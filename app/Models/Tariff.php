@@ -38,8 +38,7 @@ class Tariff extends Model
     {
         $start = $this->time_start ?? '00:00:00';
         $end = $this->time_end ?? '23:59:59';
+
         return $time >= $start && $time <= $end;
     }
 }
-
-

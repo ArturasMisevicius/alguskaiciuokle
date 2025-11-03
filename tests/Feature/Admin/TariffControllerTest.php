@@ -16,6 +16,7 @@ class TariffControllerTest extends TestCase
         $admin = User::factory()->create();
         // assume roles via gate/permissions; simplest: act as
         $this->actingAs($admin);
+
         return $admin;
     }
 
@@ -71,5 +72,3 @@ class TariffControllerTest extends TestCase
         $this->assertDatabaseMissing('tariffs', ['name' => 'Overlap']);
     }
 }
-
-

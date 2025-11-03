@@ -11,6 +11,7 @@ class TariffController extends Controller
     public function index()
     {
         $tariffs = Tariff::orderBy('time_start')->paginate(15);
+
         return view('admin.tariffs.index', compact('tariffs'));
     }
 
@@ -29,7 +30,7 @@ class TariffController extends Controller
         }
 
         // Check overlapping with existing active tariffs
-        if ($this->hasOverlap($data['time_start'] . ':00', $data['time_end'] . ':00')) {
+        if ($this->hasOverlap($data['time_start'].':00', $data['time_end'].':00')) {
             return back()->withErrors(['time_start' => __('Overlaps with an existing tariff time range')])->withInput();
         }
 
@@ -56,7 +57,7 @@ class TariffController extends Controller
             return back()->withErrors(['time_end' => __('End time must be after start time')])->withInput();
         }
 
-        if ($this->hasOverlap($data['time_start'] . ':00', $data['time_end'] . ':00', $tariff->id)) {
+        if ($this->hasOverlap($data['time_start'].':00', $data['time_end'].':00', $tariff->id)) {
             return back()->withErrors(['time_start' => __('Overlaps with an existing tariff time range')])->withInput();
         }
 
@@ -68,6 +69,7 @@ class TariffController extends Controller
     public function destroy(Tariff $tariff)
     {
         $tariff->delete();
+
         return redirect()->route('admin.tariffs.index')->with('status', __('Tariff deleted'));
     }
 
@@ -97,11 +99,10 @@ class TariffController extends Controller
         if ($ignoreId) {
             $query->where('id', '!=', $ignoreId);
         }
+
         return $query->where(function ($q) use ($start, $end) {
             $q->where('time_start', '<', $end)
-              ->where('time_end', '>', $start);
+                ->where('time_end', '>', $start);
         })->exists();
     }
 }
-
-

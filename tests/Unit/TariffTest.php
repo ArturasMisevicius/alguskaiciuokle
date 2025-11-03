@@ -23,5 +23,3 @@ class TariffTest extends TestCase
         $this->assertFalse($tariff->appliesToTime('12:00:01'));
     }
 }
-
-

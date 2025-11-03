@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
 
         // Assign admin role
         $adminRole = Role::where('name', 'admin')->first();
-        if ($adminRole && !$admin->roles()->where('role_id', $adminRole->id)->exists()) {
+        if ($adminRole && ! $admin->roles()->where('role_id', $adminRole->id)->exists()) {
             $admin->roles()->attach($adminRole->id);
         }
 
@@ -41,7 +41,7 @@ class UserSeeder extends Seeder
 
         // Assign user role
         $userRole = Role::where('name', 'user')->first();
-        if ($userRole && !$user->roles()->where('role_id', $userRole->id)->exists()) {
+        if ($userRole && ! $user->roles()->where('role_id', $userRole->id)->exists()) {
             $user->roles()->attach($userRole->id);
         }
 
@@ -59,7 +59,7 @@ class UserSeeder extends Seeder
             );
 
             // Assign user role to worker
-            if ($userRole && !$worker->roles()->where('role_id', $userRole->id)->exists()) {
+            if ($userRole && ! $worker->roles()->where('role_id', $userRole->id)->exists()) {
                 $worker->roles()->attach($userRole->id);
             }
         }

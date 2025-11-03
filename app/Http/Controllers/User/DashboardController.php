@@ -14,6 +14,7 @@ class DashboardController extends Controller
     public function index(): View
     {
         $user = auth()->user();
+
         return view('user.dashboard', compact('user'));
     }
 
@@ -23,6 +24,7 @@ class DashboardController extends Controller
     public function profile(): View
     {
         $user = auth()->user();
+
         return view('user.profile', compact('user'));
     }
 
@@ -35,7 +37,7 @@ class DashboardController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
         ]);
 
         $user->update($validated);

@@ -19,6 +19,3 @@ class CompanySeeder extends Seeder
         ]);
     }
 }
-
-
-

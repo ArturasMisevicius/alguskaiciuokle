@@ -1,8 +1,8 @@
 <?php
 
 use App\Models\Role;
-use App\Models\User;
 use App\Models\Timesheet;
+use App\Models\User;
 
 it('allows admin to open a user calendar page', function () {
     // Ensure roles exist
@@ -54,11 +54,57 @@ it('saves hours for a specific date via the calendar form', function () {
 
     $response->assertRedirect(route('admin.users.calendar', ['user' => $employee->id, 'month' => $month, 'year' => $year]));
 
-    $this->assertDatabaseHas('timesheets', [
-        'user_id' => $employee->id,
-        'date' => $date,
-        'status' => 'draft',
-    ]);
+    $timesheet = Timesheet::where('user_id', $employee->id)
+        ->whereDate('date', $date)
+        ->where('status', 'draft')
+        ->first();
+
+    expect($timesheet)->not->toBeNull();
+    expect($timesheet->user_id)->toBe($employee->id);
+    expect($timesheet->status)->toBe('draft');
 });
 
+it('rounds hours to nearest hour when saving via calendar form', function () {
+    $adminRole = Role::firstOrCreate(['name' => 'admin'], ['description' => 'Administrator']);
 
+    /** @var User $admin */
+    $admin = User::factory()->create();
+    $admin->roles()->sync([$adminRole->id]);
+
+    /** @var User $employee */
+    $employee = User::factory()->create();
+
+    $this->actingAs($admin);
+
+    $month = now()->month;
+    $year = now()->year;
+    $date = now()->startOfMonth()->toDateString();
+
+    // Test with 7.75 hours - should round to 8 hours
+    $response = $this->post(route('admin.users.calendar.save', $employee), [
+        'month' => $month,
+        'year' => $year,
+        'hours' => [
+            $date => 7.75,
+        ],
+    ]);
+
+    $response->assertRedirect();
+
+    $timesheet = Timesheet::where('user_id', $employee->id)
+        ->whereDate('date', $date)
+        ->first();
+
+    expect($timesheet)->not->toBeNull();
+
+    // Calculate expected hours from start_time and end_time
+    $start = \Carbon\Carbon::parse($timesheet->date->toDateString().' '.$timesheet->start_time);
+    $end = \Carbon\Carbon::parse($timesheet->date->toDateString().' '.$timesheet->end_time);
+    if ($end->lt($start)) {
+        $end->addDay();
+    }
+    $calculatedHours = (int) abs(round($end->diffInHours($start)));
+
+    // Should be 8 hours (rounded from 7.75)
+    expect($calculatedHours)->toBe(8);
+});

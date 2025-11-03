@@ -138,12 +138,15 @@ class Timesheet extends Model
      */
     public function calculateHours(): float
     {
-        if (!$this->start_time || !$this->end_time) {
+        if (! $this->start_time || ! $this->end_time) {
             return 0;
         }
 
-        $start = \Carbon\Carbon::parse($this->date . ' ' . $this->start_time);
-        $end = \Carbon\Carbon::parse($this->date . ' ' . $this->end_time);
+        // $this->date may already be a Carbon instance (cast as 'date') or a full datetime string.
+        // Build the datetime safely to avoid double time specification errors.
+        $date = \Carbon\Carbon::parse($this->date);
+        $start = $date->copy()->setTimeFromTimeString((string) $this->start_time);
+        $end = $date->copy()->setTimeFromTimeString((string) $this->end_time);
 
         // Handle overnight shifts
         if ($end->lt($start)) {

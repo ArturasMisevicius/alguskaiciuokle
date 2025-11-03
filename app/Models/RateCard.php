@@ -187,7 +187,7 @@ class RateCard extends Model
         }
 
         // Day-specific: +10
-        if (!empty($this->days_of_week)) {
+        if (! empty($this->days_of_week)) {
             $score += 10;
         }
 

@@ -66,7 +66,7 @@ class RateCardSeeder extends Seeder
         foreach ($rateCards as $rateCard) {
             // Check if a similar rate card exists to avoid duplicates
             $exists = RateCard::where('name', $rateCard['name'])->exists();
-            if (!$exists) {
+            if (! $exists) {
                 RateCard::create($rateCard);
             }
         }

@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Models\Project;
 use App\Models\Company;
-use App\Models\User;
+use App\Models\Project;
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -25,6 +25,7 @@ class ProjectTest extends TestCase
         $admin = User::factory()->create();
         $roleId = Role::where('name', 'admin')->value('id');
         $admin->roles()->attach($roleId);
+
         return $admin;
     }
 
@@ -91,5 +92,3 @@ class ProjectTest extends TestCase
         $this->assertDatabaseMissing('projects', ['id' => $project->id]);
     }
 }
-
-

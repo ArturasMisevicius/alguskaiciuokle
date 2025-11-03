@@ -18,7 +18,7 @@ class TariffFactory extends Factory
         $endHour = $startHour + $this->faker->numberBetween(1, 4);
 
         return [
-            'name' => 'Tariff ' . $this->faker->word(),
+            'name' => 'Tariff '.$this->faker->word(),
             'time_start' => sprintf('%02d:00:00', $startHour),
             'time_end' => sprintf('%02d:00:00', min(23, $endHour)),
             'price_per_hour' => $this->faker->randomFloat(2, 5, 100),
@@ -26,5 +26,3 @@ class TariffFactory extends Factory
         ];
     }
 }
-
-

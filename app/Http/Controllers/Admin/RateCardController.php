@@ -137,7 +137,7 @@ class RateCardController extends Controller
     public function duplicate(RateCard $rateCard)
     {
         $newRateCard = $rateCard->replicate();
-        $newRateCard->name = $rateCard->name . ' (Copy)';
+        $newRateCard->name = $rateCard->name.' (Copy)';
         $newRateCard->save();
 
         return redirect()->route('admin.rate-cards.edit', $newRateCard)

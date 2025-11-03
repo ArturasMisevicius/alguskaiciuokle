@@ -74,6 +74,7 @@ class TimesheetController extends Controller
     public function create(): View
     {
         $projects = Project::active()->get();
+
         return view('user.timesheets.create', compact('projects'));
     }
 
@@ -130,6 +131,7 @@ class TimesheetController extends Controller
         }
 
         $projects = Project::active()->get();
+
         return view('user.timesheets.edit', compact('timesheet', 'projects'));
     }
 
@@ -285,7 +287,7 @@ class TimesheetController extends Controller
             abort(403);
         }
 
-        if (!$timesheet->timer_running) {
+        if (! $timesheet->timer_running) {
             return redirect()->route('user.timesheets.index')
                 ->with('error', 'This timer is not running.');
         }

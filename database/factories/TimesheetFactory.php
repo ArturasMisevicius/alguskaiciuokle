@@ -26,7 +26,7 @@ class TimesheetFactory extends Factory
         $breakMinutes = $this->faker->randomElement([0, 15, 30, 45, 60]);
 
         $startTime = sprintf('%02d:%02d:00', $startHour, $startMinute);
-        $endTimestamp = (new \DateTime($date->format('Y-m-d') . ' ' . $startTime))
+        $endTimestamp = (new \DateTime($date->format('Y-m-d').' '.$startTime))
             ->modify("+{$durationMinutes} minutes");
         $endTime = $endTimestamp->format('H:i:s');
 
@@ -57,5 +57,3 @@ class TimesheetFactory extends Factory
         ];
     }
 }
-
-

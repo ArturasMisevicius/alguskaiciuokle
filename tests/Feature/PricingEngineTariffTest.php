@@ -36,7 +36,7 @@ class PricingEngineTariffTest extends TestCase
         ]);
 
         // No RateCards set up on purpose
-        $service = new PricingEngineService();
+        $service = new PricingEngineService;
         $service->calculatePricing($timesheet->fresh());
 
         $timesheet->refresh();
@@ -50,5 +50,3 @@ class PricingEngineTariffTest extends TestCase
         ]);
     }
 }
-
-

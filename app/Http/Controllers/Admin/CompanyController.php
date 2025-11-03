@@ -52,6 +52,7 @@ class CompanyController extends Controller
     public function edit(Company $company): View
     {
         $users = User::orderBy('name')->get(['id', 'name', 'email']);
+
         return view('admin.companies.edit', compact('company', 'users'));
     }
 
@@ -62,7 +63,7 @@ class CompanyController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'nullable|string|max:50|unique:companies,code,' . $company->id,
+            'code' => 'nullable|string|max:50|unique:companies,code,'.$company->id,
             'user_ids' => 'nullable|array',
             'user_ids.*' => 'integer|exists:users,id',
         ]);
@@ -96,5 +97,3 @@ class CompanyController extends Controller
             ->with('success', 'Company deleted successfully.');
     }
 }
-
-

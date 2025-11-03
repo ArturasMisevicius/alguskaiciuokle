@@ -48,6 +48,9 @@
 							<a class="btn-secondary" href="{{ route('admin.users.calendar', ['user'=>$user->id,'month'=>$next->month,'year'=>$next->year]) }}">
 								{{ __('Next') }}<i class="fas fa-chevron-right ml-2"></i>
 							</a>
+							<a class="btn-secondary" href="{{ route('admin.users.calendar', ['user'=>$user->id,'view'=>'week','date'=>$current->toDateString()]) }}">
+								<i class="fas fa-calendar-week mr-2"></i>{{ __('Week view') }}
+							</a>
 						</div>
 					</div>
 				</div>
@@ -68,19 +71,26 @@
 										$isCurrentMonth = $day->month === $current->month;
 										$key = $day->toDateString();
 										$existing = $timesheets[$key] ?? null;
-										$hoursPrefill = $existing?->calculated_hours;
+										$hoursPrefill = $existing ? round((float)($existing->calculated_hours ?? 0)) : null;
 									@endphp
 									<div class="border rounded p-2 bg-white {{ $isCurrentMonth ? '' : 'opacity-50' }}">
 										<div class="flex items-center justify-between mb-2">
 											<div class="text-sm font-semibold text-gray-700">{{ $day->day }}</div>
-											@if($existing)
-												<span class="badge-info"><i class="far fa-clock mr-1"></i>{{ number_format((float)($hoursPrefill ?? 0),2) }}h</span>
+											@if($existing && $hoursPrefill > 0)
+												<span class="badge-info"><i class="far fa-clock mr-1"></i>{{ $hoursPrefill }}h</span>
 											@endif
 										</div>
-										@if($isCurrentMonth)
-											<label class="block text-xs text-gray-600 mb-1">{{ __('Hours') }}</label>
-											<input name="hours[{{ $key }}]" type="number" step="0.25" min="0" max="24" value="{{ old('hours.'.$key, $hoursPrefill) }}" class="input w-full" placeholder="0.0">
-										@endif
+									@if($isCurrentMonth)
+										<label class="block text-xs text-gray-600 mb-1">{{ __('Hours') }}</label>
+										<input name="hours[{{ $key }}]" type="number" step="1" min="0" max="24" value="{{ old('hours.'.$key, $hoursPrefill) }}" class="input w-full mb-2" placeholder="0">
+										<label class="block text-xs text-gray-600 mb-1">{{ __('Tariff') }}</label>
+										<select name="tariff[{{ $key }}]" class="input w-full">
+											<option value="">{{ __('— Select tariff —') }}</option>
+											@foreach($tariffs as $tariff)
+												<option value="{{ $tariff->id }}">{{ $tariff->name }} ({{ number_format((float) $tariff->price_per_hour, 2) }})</option>
+											@endforeach
+										</select>
+									@endif
 									</div>
 								@endforeach
 							@endforeach
@@ -96,7 +106,17 @@
 									</div>
 									<div>
 										<label class="block text-sm text-gray-700 mb-1">{{ __('Часы') }}</label>
-										<input type="number" step="0.25" min="0" max="24" name="quick[hours]" class="input w-full" placeholder="0.0">
+										<input type="number" step="1" min="0" max="24" name="quick[hours]" class="input w-full" placeholder="0">
+									</div>
+									<div>
+										<label class="block text-sm text-gray-700 mb-1">{{ __('Тариф') }}</label>
+										<select name="quick[tariff_id]" class="input w-full">
+											<option value="">{{ __('— Select tariff —') }}</option>
+											@foreach($tariffs as $tariff)
+												<option value="{{ $tariff->id }}">{{ $tariff->name }} ({{ number_format((float) $tariff->price_per_hour, 2) }})</option>
+											@endforeach
+
+										</select>
 									</div>
 									<div class="flex gap-3">
 										<button type="submit" class="btn-primary">

@@ -3,9 +3,9 @@
 namespace App\Services;
 
 use App\Models\RateCard;
+use App\Models\Tariff;
 use App\Models\Timesheet;
 use App\Models\TimesheetPricingDetail;
-use App\Models\Tariff;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -73,7 +73,7 @@ class PricingEngineService
             } else {
                 // Fallback to simple tariff by time band
                 $tariff = $this->findTariffByTime($segment['start']);
-                if (!$tariff) {
+                if (! $tariff) {
                     continue;
                 }
 
@@ -119,8 +119,8 @@ class PricingEngineService
     {
         $segments = [];
 
-        $startDateTime = Carbon::parse($timesheet->date . ' ' . $timesheet->start_time);
-        $endDateTime = Carbon::parse($timesheet->date . ' ' . $timesheet->end_time);
+        $startDateTime = Carbon::parse($timesheet->date.' '.$timesheet->start_time);
+        $endDateTime = Carbon::parse($timesheet->date.' '.$timesheet->end_time);
 
         // Handle overnight shifts
         if ($endDateTime->lt($startDateTime)) {
@@ -191,7 +191,7 @@ class PricingEngineService
                 }
 
                 // Check role match
-                if ($rateCard->role_id && !in_array($rateCard->role_id, $roleIds)) {
+                if ($rateCard->role_id && ! in_array($rateCard->role_id, $roleIds)) {
                     return false;
                 }
 
@@ -201,12 +201,12 @@ class PricingEngineService
                 }
 
                 // Check day of week
-                if (!$rateCard->appliesToDayOfWeek($dayOfWeek)) {
+                if (! $rateCard->appliesToDayOfWeek($dayOfWeek)) {
                     return false;
                 }
 
                 // Check time band
-                if (!$rateCard->appliesToTime($time)) {
+                if (! $rateCard->appliesToTime($time)) {
                     return false;
                 }
 
@@ -265,7 +265,7 @@ class PricingEngineService
             ->orderByDesc('precedence')
             ->first();
 
-        if (!$overtimeCard || $weeklyHours <= ($overtimeCard->overtime_threshold ?? 40)) {
+        if (! $overtimeCard || $weeklyHours <= ($overtimeCard->overtime_threshold ?? 40)) {
             return; // No overtime
         }
 
@@ -291,7 +291,7 @@ class PricingEngineService
             ->orderByDesc('precedence')
             ->first();
 
-        if (!$overtimeCard || $totalHours <= ($overtimeCard->overtime_threshold ?? 8)) {
+        if (! $overtimeCard || $totalHours <= ($overtimeCard->overtime_threshold ?? 8)) {
             return; // No overtime
         }
 
